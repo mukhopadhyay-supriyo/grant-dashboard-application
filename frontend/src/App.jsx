@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Activity,
   CalendarDays,
@@ -24,7 +24,10 @@ import {
 } from "recharts";
 import Sidebar from "./component/Sidebar";
 import MetricCard from "./component/MetricCard";
+import HealthBadge from "./component/HealthBadge.jsx";
+import "./api.js";
 import "./App.css";
+
 export default function App() {
   const [showSignals, setShowSignals] = useState(true);
   const [range, setRange] = useState("8 hours");
@@ -54,9 +57,10 @@ export default function App() {
           <div className="toolbar-title">
             <Activity size={18} />
             <span>Heat pump system</span>
-            <span className="device-chip">
+            <HealthBadge />
+            {/* <span className="device-chip">
               <Wifi size={13} /> Connected
-            </span>
+            </span> */}
           </div>
           <div className="toolbar-actions">
             <button
@@ -97,6 +101,9 @@ export default function App() {
             value={range}
             detail="97 sample points available"
           />
+        </section>
+        <section>
+          <healthBadge />
         </section>
         This is Grant Dashboard
       </main>
