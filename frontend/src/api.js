@@ -11,3 +11,15 @@ async function getJson(path) {
 export function fetchHealth() {
   return getJson("/health");
 }
+
+export function fetchHealthDB() {
+  // alert("called");
+  return getJson("/health/db");
+}
+
+export const fetchSeries = (start, end, names) =>
+  getJson("/api/series", {
+    start: start.toISOString(),
+    end: end.toISOString(),
+    names,
+  });

@@ -30,3 +30,6 @@ logging.basicConfig(
 ACCESS_KEY = os.getenv("ACCESS_KEY", "localhost")
 SECRETE_ACCESS_KEY = os.getenv("SECRETE_ACCESS_KEY", "localhost")
 REGION = os.getenv("REGION", "localhost")
+
+# --- Data source -------------------------------------------------------------------------------
+DATA_SOURCE = os.getenv("DATA_SOURCE", "mock")

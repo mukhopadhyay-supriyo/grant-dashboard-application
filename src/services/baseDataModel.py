@@ -14,3 +14,9 @@ class Series(BaseModel):
 class SeriesResponse(BaseModel):
     timestamps: list[int]  # epoch milliseconds, UTC
     series: list[Series]
+
+
+class DataSource(Protocol):
+    def get_series(
+        self, start: datetime, end: datetime, names: list[str] | None = None
+    ) -> SeriesResponse: ...

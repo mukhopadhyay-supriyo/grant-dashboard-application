@@ -25,6 +25,7 @@ import {
 import Sidebar from "./component/Sidebar";
 import MetricCard from "./component/MetricCard";
 import HealthBadge from "./component/HealthBadge.jsx";
+import HealthBadgeDB from "./component/HealthBadgeDB.jsx";
 import "./api.js";
 import "./App.css";
 
@@ -38,7 +39,7 @@ export default function App() {
         <header className="topbar">
           <div>
             <div className="eyebrow">MONITORING / SYSTEMS</div>
-            <h1>Telemetry dashboard</h1>
+            <h1>Grant dashboard</h1>
           </div>
           <div className="topbar-actions">
             <span className="live-pill">
@@ -58,6 +59,7 @@ export default function App() {
             <Activity size={18} />
             <span>Heat pump system</span>
             <HealthBadge />
+            <HealthBadgeDB />
             {/* <span className="device-chip">
               <Wifi size={13} /> Connected
             </span> */}
@@ -79,27 +81,39 @@ export default function App() {
         <section className="metrics-grid">
           <MetricCard
             icon={Gauge}
-            label="Flow temperature"
-            value={`20 °C`}
-            detail="Latest sample · illustrative"
+            label="Compressor"
+            value={`500 rpm`}
+            detail="Compressor Frequesncy"
           />
           <MetricCard
             icon={Activity}
-            label="Return temperature"
+            label="Ambient temperature"
             value={`20 °C`}
-            detail="Latest sample · illustrative"
+            detail="Outside Temperature"
           />
           <MetricCard
-            icon={Wifi}
-            label="Active circuits"
-            value="3 / 7"
-            detail="Equipment state mock-up"
+            icon={Gauge}
+            label="Fan Speed"
+            value="300 rpm"
+            detail="Fan Rotating Speed"
+          />
+          <MetricCard
+            icon={Gauge}
+            label="Expansion Valve"
+            value="200"
+            detail="Expansion Valve Stepper Position"
+          />
+          <MetricCard
+            icon={Gauge}
+            label="Pump Speed"
+            value="622 rpm"
+            detail="Pump Speed"
           />
           <MetricCard
             icon={CalendarDays}
             label="Time window"
             value={range}
-            detail="97 sample points available"
+            detail="Window scale"
           />
         </section>
         <section>

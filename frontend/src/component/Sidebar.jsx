@@ -7,15 +7,17 @@ import {
   Settings,
   SlidersHorizontal,
 } from "lucide-react";
+import logo from "../static/logo.jpg";
 
 function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="brand-mark">
-        <Activity size={23} strokeWidth={2.4} />
+        {/* <Activity size={23} /> */}
+        <img src={logo} alt="logo" width={35} />
       </div>
       <div className="brand-word">
-        telemetry<span>cloud</span>
+        Grant<span>cloud</span>
       </div>
       <div className="side-rule" />
       <button className="side-item" title="Home">
