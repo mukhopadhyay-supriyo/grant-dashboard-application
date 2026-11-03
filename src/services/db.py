@@ -5,11 +5,11 @@ This file contains the mysql database configuration
 from typing import Dict
 import mysql.connector
 from mysql.connector import Error
-from config import logging
+from src.config import logging
 from functools import lru_cache
+import src.config as config
 
 
-@lru_cache
 def rds_connection(
     host: str, database: str, username: str, password: str, port: int
 ) -> Dict:
@@ -54,5 +54,12 @@ def rds_connection(
         return dict
 
 
+# @lru_cache
 def get_connection_objects() -> Dict:
-    return rds_connection()
+    return rds_connection(
+        config.MYSQL_HOST,
+        config.MYSQL_DATABASE,
+        config.MYSQL_USER,
+        config.MYSQL_PASSWORD,
+        config.MYSQL_PORT,
+    )
