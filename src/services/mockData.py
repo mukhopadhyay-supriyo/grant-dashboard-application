@@ -20,19 +20,19 @@ def _timestamps(start: datetime, end: datetime) -> list[int]:
 
 
 SIGNALS: dict[str, tuple[str, str, float]] = {
-    "Suction temp": ("°C", "left", 20.0),
-    "Discharge temp": ("°C", "left", 20.0),
-    "Exp in temp": ("°C", "left", 20.0),
-    "Exp out temp": ("°C", "left", 20.0),
-    "Ambient temp": ("°C", "left", 20.0),
+    "Suction_temp": ("°C", "left", 20.0),
+    "Discharge_temp": ("°C", "left", 20.0),
+    "Exp_in_temp": ("°C", "left", 20.0),
+    "Exp_out_temp": ("°C", "left", 20.0),
+    "Ambient_temp": ("°C", "left", 20.0),
     # "DHW temp": ("°C", "left", 50.0),
-    "Flow temp": (
+    "Flow_temp": (
         "°C",
         "left",
         25.0,
     ),
-    "Return temp": ("°C", "left", 25.0),
-    "PCB temp": ("°C", "left", 25.0),
+    "Return_temp": ("°C", "left", 25.0),
+    "PCB_temp": ("°C", "left", 25.0),
     "Flow_1": ("m/s", "left", 25.0),
     "Flow_2": ("m/s", "left", 25.0),
     "Output_Flag_1": ("bool", "left", 1.0),
