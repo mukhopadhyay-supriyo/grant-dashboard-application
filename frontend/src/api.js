@@ -5,6 +5,7 @@ async function getJson(path) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${path} returned ${res.status}`);
 
+  // alert(res.json());
   return res.json();
 }
 
@@ -17,9 +18,11 @@ export function fetchHealthDB() {
   return getJson("/health/db");
 }
 
-export const fetchSeries = (start, end, names) =>
-  getJson("/api/series", {
-    start: start.toISOString(),
-    end: end.toISOString(),
-    names,
-  });
+export function fetchSeries(start, end, names) {
+  return getJson("/series");
+}
+// getJson("/api/series", {
+//   start: start.toISOString(),
+//   end: end.toISOString(),
+//   names,
+// });
