@@ -32,4 +32,4 @@ SECRETE_ACCESS_KEY = os.getenv("SECRETE_ACCESS_KEY", "localhost")
 REGION = os.getenv("REGION", "localhost")
 
 # --- Data source -------------------------------------------------------------------------------
-DATA_SOURCE = os.getenv("DATA_SOURCE", "mock")
+DATA_SOURCE = os.getenv("DATA_SOURCE", "mysql")

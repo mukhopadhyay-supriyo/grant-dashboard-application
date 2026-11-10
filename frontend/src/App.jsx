@@ -17,7 +17,7 @@ import MetricCard from "./component/MetricCard";
 import HealthBadge from "./component/HealthBadge.jsx";
 import HealthBadgeDB from "./component/HealthBadgeDB.jsx";
 import { fetchSeries } from "./api.js";
-import Chart from "./component/chart.jsx";
+import Chart from "./component/Chart.jsx";
 import "./App.css";
 import { columns } from "./Columns.js";
 
@@ -30,10 +30,18 @@ const RANGES = [
   { label: "8 hours", hours: 8 },
 ];
 
+const DEFAULT_SIGNALS = [
+  "Suction_temp",
+  "Discharge_temp",
+  "Ambient_temp",
+  "Flow_temp",
+  "Return_temp",
+];
+
 export default function App() {
-  const [selected, setSelected] = useState(signals.map((s) => s.key));
+  const [selected, setSelected] = useState(DEFAULT_SIGNALS);
   const [showSignals, setShowSignals] = useState(true);
-  const [range, setRange] = useState("8 hours");
+  const [range, setRange] = useState("1 hours");
   const [hours, setHours] = useState(24);
   const [search, setSearch] = useState("");
 
@@ -65,7 +73,11 @@ export default function App() {
         setLoading(true);
         setError(null);
 
-        const result = await fetchSeries(start, end, columns);
+        const result = await fetchSeries(
+          start,
+          end,
+          signals.map((s) => s.key),
+        );
         setData(result);
       } catch (err) {
         setError(err);
@@ -75,8 +87,21 @@ export default function App() {
     };
 
     loadData();
-  }, [start, end, columns]);
+  }, [start, end]);
 
+  const exportCsv = () => {
+    const csv = [
+      "timestamp," + selected.join(","),
+      ...visibleData.map((row) =>
+        [row.timestamp, ...selected.map((k) => row[k])].join(","),
+      ),
+    ].join("\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    link.download = "telemetry-export.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
   console.log(data);
   return (
     <div className="app-shell">
@@ -116,9 +141,9 @@ export default function App() {
               onClick={() => setShowSignals((v) => !v)}>
               <SlidersHorizontal size={15} /> Signals
             </button>
-            {/* <button className="secondary-button" onClick={exportCsv}>
+            <button className="secondary-button" onClick={exportCsv}>
               <Download size={15} /> Export CSV
-            </button> */}
+            </button>
             <button className="primary-button">
               <CalendarDays size={15} /> Oct 19, 2026 <ChevronDown size={14} />
             </button>
@@ -184,7 +209,7 @@ export default function App() {
               </div>
               <button
                 className="icon-button"
-                // onClick={exportCsv}
+                onClick={exportCsv}
                 title="Export CSV">
                 <Download size={16} />
               </button>

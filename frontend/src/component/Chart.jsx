@@ -30,6 +30,44 @@ function transformChartData(apiData) {
     return row;
   });
 }
+
+const formatTick = (ms) =>
+  new Date(ms).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+const formatValue = (v) =>
+  typeof v === "number"
+    ? v.toLocaleString(undefined, { maximumFractionDigits: 2 })
+    : "–";
+
+function ChartTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null;
+  const columns = payload.length > 30 ? 3 : payload.length > 12 ? 2 : 1;
+  return (
+    <div className="chart-tooltip">
+      <div className="chart-tooltip-title">
+        {new Date(label).toLocaleString()}
+      </div>
+      <div
+        className="chart-tooltip-grid"
+        style={{
+          gridTemplateColumns: `repeat(${columns}, minmax(170px, 1fr))`,
+        }}>
+        {payload.map((p) => {
+          const meta = signals.find((s) => s.key === p.dataKey);
+          return (
+            <div className="chart-tooltip-row" key={p.dataKey}>
+              <span className="signal-dot" style={{ background: p.color }} />
+              <span className="chart-tooltip-name">{p.name}</span>
+              <b>
+                {formatValue(p.value)} {meta?.unit ?? ""}
+              </b>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 export default function Chart({ data, selectedSignals }) {
   const chartData = useMemo(() => transformChartData(data), [data]);
   // const visibleSignals = useMemo(
@@ -54,6 +92,7 @@ export default function Chart({ data, selectedSignals }) {
             tickLine={false}
             axisLine={{ stroke: "#d9dfe7" }}
             minTickGap={35}
+            tickFormatter={formatTick}
           />
 
           <YAxis
@@ -65,16 +104,10 @@ export default function Chart({ data, selectedSignals }) {
           />
 
           <Tooltip
-            labelFormatter={(value) => new Date(value).toLocaleString()}
-            wrapperStyle={{ zIndex: 10 }}
-            allowEscapeViewBox={{ x: false, y: true }}
-            contentStyle={{
-              border: "1px solid #e4e9f0",
-              borderRadius: 10,
-              boxShadow: "0 8px 24px #15243b12",
-              fontSize: 12,
-            }}
-            labelStyle={{ fontWeight: 700, color: "#243247" }}
+            content={<ChartTooltip />}
+            cursor={{ stroke: "#c8ced8", strokeDasharray: "4 4" }}
+            wrapperStyle={{ zIndex: 10, outline: "none" }}
+            isAnimationActive={false}
           />
 
           {/* <Legend /> */}

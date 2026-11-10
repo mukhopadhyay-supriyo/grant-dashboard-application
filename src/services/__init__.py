@@ -11,8 +11,8 @@ def get_data_source() -> DataSource:
         from src.services.mockData import MockSource
 
         return MockSource()
-    # if config.DATA_SOURCE == "mysql":
-    #     from src.services.mysql_source import MysqlSource
+    if config.DATA_SOURCE == "mysql":
+        from src.services.mysql_source import MysqlSource
 
-    #     return MysqlSource()
+        return MysqlSource()
     raise ValueError(f"Unknown DATA_SOURCE: {config.DATA_SOURCE!r}")
