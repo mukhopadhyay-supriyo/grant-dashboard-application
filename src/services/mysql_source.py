@@ -1,4 +1,4 @@
-from src.services.baseDataModel import Series, SeriesResponse
+from src.services.baseDataModel import Series, SeriesResponse, LoginRequest
 
 from datetime import UTC, datetime
 from src.services.db import get_connection_objects
@@ -100,8 +100,7 @@ class MysqlSource:
         db = get_connection_objects()
         if not db:
             raise RuntimeError("Could not connect to MySQL")
-        conn = db["connection"]
-        cursor = db["cursor"]
+        conn, cursor = db["connection"], db["cursor"]
 
         try:
             cursor.execute(
@@ -113,15 +112,47 @@ class MysqlSource:
             db["cursor"].close()
             conn.close()
 
+        # print(rows)
         # Wide rows are already the right shape: one list per column.
-        timestamps = [_to_ms(row["Time_stamp"]) for row in rows]
+        timestamps = [_to_ms(row[0]) for row in rows]
         series = []
-        for col in columns:
+        for i, col in enumerate(columns, start=1):
             key = COLUMN_MAP[col]
             unit, axis, _ = SIGNALS.get(key, ("", "left", 0))
-            values = [None if row[col] is None else float(row[col]) for row in rows]
+            values = [None if row[i] is None else float(row[i]) for row in rows]
             series.append(
                 Series(name=key, unit=unit, axis=axis, values=values)
             )  # type: 
 
         return SeriesResponse(timestamps=timestamps, series=series)
+
+    def validate(
+        self, email: str | None = None, password: str | None = None
+    ) -> LoginRequest:
+
+        sql = f"SELECT * FROM `ep011-db`.`User` WHERE `Email` = '{email}' AND `Password` = '{password}'"
+        db = get_connection_objects()
+        if not db:
+            raise RuntimeError("Could not connect to MySQL")
+        conn, cursor = db["connection"], db["cursor"]
+        try:
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+        finally:
+            cursor.close()
+            db["cursor"].close()
+            conn.close()
+
+        timestamps = datetime.now()
+        user = []
+
+        user = LoginRequest(
+            name=rows[0][1], email=rows[0][2], password=rows[0][3], id=rows[0][0]
+        )
+
+        return user
+
+
+# ms = MysqlSource()
+
+# ms.validate("smukhopadhyay@grant.ie", "123")
