@@ -1,0 +1,172 @@
+/* Login page. Self-contained: no Bootstrap needed. */
+.signin-page {
+  --signin-blue: #3b7cf5;
+  --signin-blue-dark: #2d68d8;
+  --signin-text: #262b33;
+  --signin-muted: #8a909a;
+  --signin-border: #e2e5ea;
+
+  min-height: 100vh;
+  background: #f5f6f8;
+  font-family:
+    "Poppins",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  color: var(--signin-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 48px;
+  box-sizing: border-box;
+}
+.signin-page *,
+.signin-page *::before,
+.signin-page *::after {
+  box-sizing: border-box;
+}
+
+/* Logo, top of the card */
+.signin-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 28px;
+}
+.signin-brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+/* Card, centred on the screen */
+.signin-card {
+  width: 100%;
+  max-width: 336px;
+  margin: auto 0;
+  background: #fff;
+  border: 1px solid var(--signin-border);
+  border-radius: 6px;
+  padding: 26px 36px 24px;
+}
+.signin-eyebrow {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--signin-muted);
+}
+.signin-title {
+  margin: 0 0 34px;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+/* Inputs */
+.signin-input {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  margin-bottom: 18px;
+  border: 1px solid var(--signin-border);
+  border-radius: 5px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--signin-text);
+  background: #fff;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.signin-input::placeholder {
+  color: var(--signin-muted);
+}
+.signin-input:focus {
+  outline: none;
+  border-color: var(--signin-blue);
+  box-shadow: 0 0 0 3px #3b7cf522;
+}
+
+/* Remember me + forgot password */
+.signin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -6px 0 34px;
+  font-size: 11px;
+}
+.signin-remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.signin-remember input {
+  margin: 0;
+  width: 13px;
+  height: 13px;
+}
+.signin-link {
+  color: var(--signin-blue);
+  text-decoration: underline;
+  font-size: 11px;
+}
+.signin-link:hover {
+  color: var(--signin-blue-dark);
+}
+
+/* Error message */
+.signin-error {
+  margin: -20px 0 14px;
+  font-size: 12px;
+  color: #d64545;
+}
+
+/* Buttons */
+.signin-primary,
+.signin-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.signin-primary {
+  border: 0;
+  background: var(--signin-blue);
+  color: #fff;
+  margin-bottom: 14px;
+}
+.signin-primary:hover:not(:disabled) {
+  background: var(--signin-blue-dark);
+}
+.signin-primary:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+.signin-secondary {
+  border: 1px solid var(--signin-border);
+  background: #fff;
+  color: var(--signin-text);
+}
+.signin-secondary:disabled {
+  color: var(--signin-muted);
+  cursor: not-allowed;
+}
+
+.signin-footer {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 11px;
+  color: var(--signin-muted);
+}

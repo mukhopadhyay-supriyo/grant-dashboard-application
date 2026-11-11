@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Query
 import src.services.db as database
-from src.services.baseDataModel import SeriesResponse
+from src.services.baseDataModel import SeriesResponse, LoginRequest
 from datetime import UTC, datetime, timedelta
 from src.services import get_data_source
+from typing import Any
 
 router = APIRouter(prefix="/api")
 
@@ -46,6 +47,25 @@ def series(
     end: datetime | None = None,
     names: list[str] | None = Query(default=None),
 ) -> SeriesResponse:
+    print(start)
+    print(end)
     start, end = _window(start, end)
-    print(names)
     return get_data_source().get_series(start, end, names)
+
+
+@router.post("/login")
+def login(body: LoginRequest) -> dict[str, Any]:
+    print(body.email)
+    user = get_data_source().validate(email=body.email, password=body.password)
+    print(user.email)
+    if user is None:
+        # Same message for "no such email" and "wrong password", so it
+        # doesn't reveal which emails exist
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    return {
+        "status": "ok",
+        "user": {"name": user.name, "email": user.email, "id": user.id},
+    }
+
+
+# validateUser("smukhopadhyay@grant.ie", "123")

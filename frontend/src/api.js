@@ -32,3 +32,36 @@ export function fetchSeries(start, end, names) {
     names,
   });
 }
+
+// export function login({ email, password }) {
+//   const reqBody = {
+//     email: email,
+//     password: password,
+//   };
+//   const res = fetch("/login", {
+//     method: "GET",
+//     headers: { "Content-Type": "application/json" },
+//     body: reqBody,
+//   });
+//   alert(reqBody);
+//   if (res.status === 401) throw new Error("Invalid email or password");
+//   if (!res.ok) throw new Error(`Login failed (${res.status})`);
+//   return res.json();
+// }
+
+async function validate({ email, password }) {
+  const path = "/login";
+  const url = `${BASE}${path}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  if (res.status === 401) throw new Error("Invalid email or password");
+  if (!res.ok) throw new Error(`Login failed (${res.status})`);
+  return res.json();
+}
+
+export function login(email, pass) {
+  return validate(email, pass);
+}

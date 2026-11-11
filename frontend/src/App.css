@@ -365,7 +365,7 @@
   padding: 10px 0 0;
 }
 .chart-wrap {
-  height: 420px;
+  height: 520px;
   min-width: 0;
   flex: 1;
   padding: 12px 10px 4px;
@@ -561,7 +561,7 @@
     padding-right: 6px;
   }
   .chart-wrap {
-    height: 420px;
+    height: 520px;
     padding: 8px 2px;
   }
   .lane {
