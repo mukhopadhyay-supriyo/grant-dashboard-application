@@ -80,9 +80,31 @@ SIGNALS: dict[str, tuple[str, str, float]] = {
 }
 
 
+def _is_running(ts_ms: int) -> bool:
+    """True during the RUN_MIN-minute window at the start of every CYCLE_MIN cycle."""
+    minute = ts_ms // STEP_MS
+    return minute % CYCLE_MIN < RUN_MIN
+
+
 class MockSource:
     def __init__(self) -> None:
         self._rng = random.Random(42)
+
+    def _values(
+        self, unit: str, base: float, timestamps: list[int]
+    ) -> list[float | None]:
+        """One value per timestamp, so every chart row has data."""
+        if unit in ("bool", "flag"):
+            return [1.0 if _is_running(ts) else 0.0 for ts in timestamps]
+
+        values: list[float | None] = []
+        level = base
+        for ts in timestamps:
+            # When the cycle is running, drift up ~20%; otherwise relax back to base
+            target = base * 1.2 if _is_running(ts) else base
+            level += (target - level) * 0.15 + self._rng.gauss(0, abs(base) * 0.01)
+            values.append(round(level, 2))
+        return values
 
     def get_series(
         self, start: datetime, end: datetime, names: list[str] | None = None
@@ -91,8 +113,8 @@ class MockSource:
         selected = [n for n in SIGNALS if names is None or n in names]
         series = []
         for name in selected:
-            unit, axis, fn = SIGNALS[name]
-            values = [fn]
+            unit, axis, base = SIGNALS[name]
+            values = self._values(unit, base, timestamps)
             series.append(
                 Series(name=name, unit=unit, axis=axis, values=values)  # type: ignore
             )

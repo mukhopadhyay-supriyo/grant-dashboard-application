@@ -47,4 +47,5 @@ def series(
     names: list[str] | None = Query(default=None),
 ) -> SeriesResponse:
     start, end = _window(start, end)
+    print(names)
     return get_data_source().get_series(start, end, names)
