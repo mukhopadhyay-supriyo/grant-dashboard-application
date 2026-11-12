@@ -10,6 +10,7 @@ import {
   Search,
   SlidersHorizontal,
   Wifi,
+  LogOut,
 } from "lucide-react";
 
 import Sidebar from "./component/Sidebar";
@@ -122,6 +123,12 @@ export default function AppShell() {
               <RefreshCw size={17} />
             </button>
             <div className="avatar">SM</div>
+            <button
+              className="logout-pill"
+              onClick={() => window.location.reload()}
+              title="Logout">
+              <LogOut size={17} /> Logout
+            </button>
           </div>
         </header>
         <section className="page-toolbar">
