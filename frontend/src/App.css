@@ -109,6 +109,25 @@
   font-size: 11px;
   font-weight: 600;
 }
+.logout-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #eaf7f0;
+  color: #352e88;
+  border-radius: 20px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.logout-pill span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #35ae78;
+  display: inline-block;
+}
 .live-pill span,
 .footer-dot {
   width: 6px;
