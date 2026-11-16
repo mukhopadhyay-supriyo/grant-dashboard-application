@@ -15,22 +15,6 @@ import {
 import { useMemo } from "react";
 import { signals } from "../Columns";
 
-function transformChartData(apiData) {
-  const { timestamps, series } = apiData;
-
-  return timestamps.map((timestamp, index) => {
-    const row = {
-      timestamp: timestamp,
-    };
-
-    series.forEach((sensor) => {
-      row[sensor.name] = sensor.values[index] ?? null;
-    });
-
-    return row;
-  });
-}
-
 const formatTick = (ms) =>
   new Date(ms).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
@@ -69,7 +53,7 @@ function ChartTooltip({ active, payload, label }) {
   );
 }
 export default function Chart({ data, selectedSignals }) {
-  const chartData = useMemo(() => transformChartData(data), [data]);
+  const chartData = useMemo(() => data, [data]);
   // const visibleSignals = useMemo(
   //   () => signals.filter((s) => selectedSignals.includes(s.key)),
   //   [selectedSignals],

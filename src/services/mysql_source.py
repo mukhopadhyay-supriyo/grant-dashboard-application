@@ -1,4 +1,9 @@
-from src.services.baseDataModel import Series, SeriesResponse, LoginRequest
+from src.services.baseDataModel import (
+    Series,
+    SeriesResponse,
+    LoginRequest,
+    DeviceDetails,
+)
 
 from datetime import UTC, datetime
 from src.services.db import get_connection_objects
@@ -80,7 +85,11 @@ def _to_ms(ts) -> int:
 
 class MysqlSource:
     def get_series(
-        self, start: datetime, end: datetime, names: list[str] | None = None
+        self,
+        start: datetime,
+        end: datetime,
+        deviceid: str,
+        names: list[str] | None = None,
     ) -> SeriesResponse:
         columns = [
             col for col, key in COLUMN_MAP.items() if names is None or key in names
@@ -91,7 +100,7 @@ class MysqlSource:
         sql = f"""
             SELECT `Time_stamp`, {select_list}
             FROM `heatpump_data`
-            WHERE `Device_Id` LIKE %s AND
+            WHERE `Device_Id` = %s AND
             `Time_stamp` BETWEEN %s AND %s
             ORDER BY `Time_stamp` ASC
             LIMIT %s
@@ -103,9 +112,7 @@ class MysqlSource:
         conn, cursor = db["connection"], db["cursor"]
 
         try:
-            cursor.execute(
-                sql, (DEVICE_PREFIX, _db_time(start), _db_time(end), MAX_ROWS)
-            )
+            cursor.execute(sql, (deviceid, _db_time(start), _db_time(end), MAX_ROWS))
             rows = cursor.fetchall()
         finally:
             cursor.close()
@@ -151,6 +158,28 @@ class MysqlSource:
         )
 
         return user
+
+    def getDevice(self, loginRequest: LoginRequest) -> DeviceDetails:
+        userid = loginRequest.id
+        # print(userid)
+
+        sql = f"SELECT * FROM `ep011-db`.Devices where `UserId` = {userid};"
+        db = get_connection_objects()
+        if not db:
+            raise RuntimeError("Could not connect to MySQL")
+        conn, cursor = db["connection"], db["cursor"]
+        try:
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+        finally:
+            cursor.close()
+            db["cursor"].close()
+            conn.close()
+
+        # print(rows[0][1])
+        device = DeviceDetails(deviceid=rows[0][1], description=rows[0][2])
+
+        return device
 
 
 # ms = MysqlSource()

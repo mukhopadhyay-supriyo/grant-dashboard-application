@@ -17,8 +17,8 @@ export default function Login({ onSuccess }) {
 
     try {
       const user = await login({ email, password });
-      // console.log(user.user);
-      onSuccess?.({ ...user, remember });
+      // console.log(user.user.email);
+      onSuccess?.({ ...user.user, remember });
     } catch (err) {
       setError(err.message);
     } finally {

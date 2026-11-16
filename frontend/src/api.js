@@ -25,8 +25,9 @@ export function fetchHealthDB() {
   return getJson("/health/db");
 }
 
-export function fetchSeries(start, end, names) {
+export function fetchSeries(start, end, deviceid, names) {
   return getJson("/series", {
+    deviceid: deviceid,
     start: start.toISOString(),
     end: end.toISOString(),
     names,

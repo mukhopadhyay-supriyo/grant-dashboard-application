@@ -43,28 +43,37 @@ def health_db() -> dict[str, str]:
 
 @router.get("/series", response_model=SeriesResponse)
 def series(
+    deviceid: str | None = "SM002R42D788",
     start: datetime | None = None,
     end: datetime | None = None,
     names: list[str] | None = Query(default=None),
 ) -> SeriesResponse:
-    print(start)
-    print(end)
+    # print(start)
+    # print(end)
+    # print(deviceid)
     start, end = _window(start, end)
-    return get_data_source().get_series(start, end, names)
+    return get_data_source().get_series(start, end, deviceid, names)
 
 
 @router.post("/login")
 def login(body: LoginRequest) -> dict[str, Any]:
-    print(body.email)
     user = get_data_source().validate(email=body.email, password=body.password)
-    print(user.email)
+    device = get_data_source().getDevice(user)
     if user is None:
         # Same message for "no such email" and "wrong password", so it
         # doesn't reveal which emails exist
         raise HTTPException(status_code=401, detail="Invalid email or password")
+    if device is None:
+        raise HTTPException(status_code=401, detail="No device registered to this user")
     return {
         "status": "ok",
-        "user": {"name": user.name, "email": user.email, "id": user.id},
+        "user": {
+            "name": user.name,
+            "email": user.email,
+            "id": user.id,
+            "deviceid": device.deviceid,
+            "description": device.description,
+        },
     }
 
 
