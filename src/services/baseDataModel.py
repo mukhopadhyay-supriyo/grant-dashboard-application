@@ -11,6 +11,11 @@ class LoginRequest(BaseModel):
     id: int = 1
 
 
+class DeviceDetails(BaseModel):
+    deviceid: str = "1"
+    description: str
+
+
 class Series(BaseModel):
     name: str
     unit: str
@@ -25,9 +30,15 @@ class SeriesResponse(BaseModel):
 
 class DataSource(Protocol):
     def get_series(
-        self, start: datetime, end: datetime, names: list[str] | None = None
+        self,
+        start: datetime,
+        end: datetime,
+        deviceid: str | None = "SM002R42D788",
+        names: list[str] | None = None,
     ) -> SeriesResponse: ...
 
     def validate(
         self, email: str | None = None, password: str | None = None
     ) -> LoginRequest: ...
+
+    def getDevice(self, loginRequest: LoginRequest) -> DeviceDetails: ...

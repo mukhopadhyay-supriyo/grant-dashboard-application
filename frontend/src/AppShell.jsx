@@ -39,12 +39,45 @@ const DEFAULT_SIGNALS = [
   "Return_temp",
 ];
 
-export default function AppShell() {
+function transformChartData(apiData) {
+  const { timestamps, series } = apiData;
+
+  return timestamps.map((timestamp, index) => {
+    const row = {
+      timestamp: timestamp,
+    };
+
+    series.forEach((sensor) => {
+      row[sensor.name] = sensor.values[index] ?? null;
+    });
+
+    return row;
+  });
+}
+
+export default function AppShell({ user, onLogout }) {
   const [selected, setSelected] = useState(DEFAULT_SIGNALS);
   const [showSignals, setShowSignals] = useState(true);
   const [range, setRange] = useState("15 Min");
   const [hours, setHours] = useState(0.25);
   const [search, setSearch] = useState("");
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [len, setLength] = useState(0);
+  const [compressor, setCompressor] = useState(0);
+  const [ambient, setAmbient] = useState(0);
+  const [fanspeed, setFanspeed] = useState(0);
+  const [pumpspeed, setPumpspeed] = useState(0);
+  const [exp, setExp] = useState(0);
+
+  const logout = () => {
+    try {
+      onLogout?.();
+    } catch (error) {
+      setError(error);
+    }
+  };
 
   const { start, end } = useMemo(() => {
     const end = new Date();
@@ -63,10 +96,6 @@ export default function AppShell() {
       ),
     [search],
   );
-
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -76,9 +105,17 @@ export default function AppShell() {
         const result = await fetchSeries(
           start,
           end,
+          user.deviceid,
           signals.map((s) => s.key),
         );
-        setData(result);
+        // console.log(transformChartData(result));
+        setData(transformChartData(result));
+        setLength(data.length - 1);
+        setCompressor(data[len].Comp_Speed_Target);
+        setAmbient(data[len].Ambient_temp);
+        setFanspeed(data[len].Fan_Tach);
+        setExp(data[len].Stepper_Position);
+        setPumpspeed(data[len].Pump_Speed_Target);
       } catch (err) {
         setError(err);
       } finally {
@@ -102,7 +139,8 @@ export default function AppShell() {
     link.click();
     URL.revokeObjectURL(link.href);
   };
-  console.log(data);
+
+  // console.log(data[length].Ambient_temp);
   return (
     <div className="app-shell">
       <Sidebar />
@@ -122,11 +160,10 @@ export default function AppShell() {
               title="Refresh">
               <RefreshCw size={17} />
             </button>
-            <div className="avatar">SM</div>
-            <button
-              className="logout-pill"
-              onClick={() => window.location.reload()}
-              title="Logout">
+            <div className="avatar" title={user.email}>
+              {user.email?.slice(0, 2).toUpperCase()}
+            </div>
+            <button className="logout-pill" onClick={logout} title="Logout">
               <LogOut size={17} /> Logout
             </button>
           </div>
@@ -159,31 +196,31 @@ export default function AppShell() {
           <MetricCard
             icon={Gauge}
             label="Compressor"
-            value={`500 rpm`}
+            value={`${compressor} rpm`}
             detail="Compressor Frequesncy"
           />
           <MetricCard
             icon={Activity}
             label="Ambient temperature"
-            value={`20 °C`}
+            value={`${ambient}  °C`}
             detail="Outside Temperature"
           />
           <MetricCard
             icon={Gauge}
             label="Fan Speed"
-            value="300 rpm"
+            value={`${fanspeed}  rpm`}
             detail="Fan Rotating Speed"
           />
           <MetricCard
             icon={Gauge}
             label="Expansion Valve"
-            value="200"
+            value={`${exp}  rpm`}
             detail="Expansion Valve Stepper Position"
           />
           <MetricCard
             icon={Gauge}
             label="Pump Speed"
-            value="622 rpm"
+            value={`${pumpspeed}  rpm`}
             detail="Pump Speed"
           />
           <MetricCard

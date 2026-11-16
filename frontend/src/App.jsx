@@ -2,6 +2,7 @@ import AppShell from "./AppShell";
 import { useMemo, useState, useEffect } from "react";
 import Login from "./component/Login";
 
+const STORAGE_KEY = "grant-user";
 // Runs once on start-up: look for a saved login
 function loadUser() {
   try {
@@ -22,28 +23,24 @@ function loadUser() {
 }
 
 export default function App() {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("user");
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [user, setUser] = useState(loadUser);
 
-  if (!user)
-    return (
-      <Login
-        onSuccess={(u) => {
-          setUser(u);
-          console.log("Logged in as", u.email);
-        }}
-      />
-    );
+  const handleLogin = (u) => {
+    const storage = u.remember ? localStorage : sessionStorage;
+    const toSave = u.remember
+      ? { ...u, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 }
+      : u;
+    storage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    setUser(toSave);
+  };
 
-  return (
-    <AppShell
-      user={user}
-      onLogout={() => {
-        setUser(null);
-        localStorage.removeItem("user");
-      }}
-    />
-  );
+  const handleLogout = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(sessionStorage);
+    setUser(null);
+  };
+
+  if (!user) return <Login onSuccess={handleLogin} />;
+  // alert(user.email);
+  return <AppShell user={user} onLogout={handleLogout} />;
 }
