@@ -76,7 +76,7 @@ SIGNALS: dict[str, tuple[str, str, float]] = {
     "P_EEV_Threshold_Check_Time": ("flag", "left", 1.0),
     "P_Fan_Auto": ("flag", "left", 1.0),
     "pump_Mode": ("flag", "left", 1.0),
-    "pump_rpm_set": ("Hz", "right", 400),
+    "pump_rpm_set": ("Hz", "left", 400),
 }
 
 

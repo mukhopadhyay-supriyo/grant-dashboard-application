@@ -17,6 +17,8 @@ import Sidebar from "./component/Sidebar";
 import MetricCard from "./component/MetricCard";
 import HealthBadge from "./component/HealthBadge.jsx";
 import HealthBadgeDB from "./component/HealthBadgeDB.jsx";
+import Topbar from "./component/Topbar.jsx";
+import Toolbar from "./component/Toolbar.jsx";
 import { fetchSeries } from "./api.js";
 import Chart from "./component/Chart.jsx";
 import "./App.css";
@@ -71,20 +73,12 @@ export default function AppShell({ user, onLogout }) {
   const [pumpspeed, setPumpspeed] = useState(0);
   const [exp, setExp] = useState(0);
 
-  const logout = () => {
-    try {
-      onLogout?.();
-    } catch (error) {
-      setError(error);
-    }
-  };
-
   const { start, end } = useMemo(() => {
     const end = new Date();
     const start = new Date(end.getTime() - hours * 3600000);
     return { start, end };
   }, [hours]);
-
+  // console.log(start);
   const toggleSignal = (key) =>
     setSelected((old) =>
       old.includes(key) ? old.filter((k) => k !== key) : [...old, key],
@@ -108,7 +102,7 @@ export default function AppShell({ user, onLogout }) {
           user.deviceid,
           signals.map((s) => s.key),
         );
-        // console.log(transformChartData(result));
+        // console.log(result);
         setData(transformChartData(result));
         setLength(data.length - 1);
         setCompressor(data[len].Comp_Speed_Target);
@@ -126,72 +120,13 @@ export default function AppShell({ user, onLogout }) {
     loadData();
   }, [start, end]);
 
-  const exportCsv = () => {
-    const csv = [
-      "timestamp," + selected.join(","),
-      ...visibleData.map((row) =>
-        [row.timestamp, ...selected.map((k) => row[k])].join(","),
-      ),
-    ].join("\n");
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-    link.download = "telemetry-export.csv";
-    link.click();
-    URL.revokeObjectURL(link.href);
-  };
-
   // console.log(data[length].Ambient_temp);
   return (
-    <div className="app-shell">
+    <>
       <Sidebar />
       <main className="main-content">
-        <header className="topbar">
-          <div>
-            <div className="eyebrow">MONITORING / SYSTEMS</div>
-            <h1>Grant dashboard</h1>
-          </div>
-          <div className="topbar-actions">
-            <span className="live-pill">
-              <span /> Live data
-            </span>
-            <button
-              className="icon-button"
-              onClick={() => window.location.reload()}
-              title="Refresh">
-              <RefreshCw size={17} />
-            </button>
-            <div className="avatar" title={user.email}>
-              {user.email?.slice(0, 2).toUpperCase()}
-            </div>
-            <button className="logout-pill" onClick={logout} title="Logout">
-              <LogOut size={17} /> Logout
-            </button>
-          </div>
-        </header>
-        <section className="page-toolbar">
-          <div className="toolbar-title">
-            <Activity size={18} />
-            <span>Heat pump system</span>
-            <HealthBadge />
-            <HealthBadgeDB />
-            {/* <span className="device-chip">
-              <Wifi size={13} /> Connected
-            </span> */}
-          </div>
-          <div className="toolbar-actions">
-            <button
-              className="secondary-button"
-              onClick={() => setShowSignals((v) => !v)}>
-              <SlidersHorizontal size={15} /> Signals
-            </button>
-            <button className="secondary-button" onClick={exportCsv}>
-              <Download size={15} /> Export CSV
-            </button>
-            <button className="primary-button">
-              <CalendarDays size={15} /> Oct 19, 2026 <ChevronDown size={14} />
-            </button>
-          </div>
-        </section>
+        <Topbar user={user} onLogout={onLogout} />
+        <Toolbar />
         <section className="metrics-grid">
           <MetricCard
             icon={Gauge}
@@ -202,7 +137,7 @@ export default function AppShell({ user, onLogout }) {
           <MetricCard
             icon={Activity}
             label="Ambient temperature"
-            value={`${ambient}  °C`}
+            value={`${ambient / 100}  °C`}
             detail="Outside Temperature"
           />
           <MetricCard
@@ -234,7 +169,7 @@ export default function AppShell({ user, onLogout }) {
           <div className="card-heading">
             <div>
               <h2>Sensor trends</h2>
-              <p>Temperature signals over time · sample interval 5 minutes</p>
+              <p>Heatpump data over time · sample interval 1 Second</p>
             </div>
             <div className="chart-controls">
               <div className="range-switch">
@@ -252,7 +187,7 @@ export default function AppShell({ user, onLogout }) {
               </div>
               <button
                 className="icon-button"
-                onClick={exportCsv}
+                // onClick={exportCsv}
                 title="Export CSV">
                 <Download size={16} />
               </button>
@@ -328,6 +263,6 @@ export default function AppShell({ user, onLogout }) {
           </span>
         </footer>
       </main>
-    </div>
+    </>
   );
 }

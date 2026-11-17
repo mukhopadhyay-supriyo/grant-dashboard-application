@@ -1,6 +1,7 @@
 import AppShell from "./AppShell";
 import { useMemo, useState, useEffect } from "react";
 import Login from "./component/Login";
+import { useProvider } from "./ContextProvider";
 
 const STORAGE_KEY = "grant-user";
 // Runs once on start-up: look for a saved login
@@ -23,7 +24,7 @@ function loadUser() {
 }
 
 export default function App() {
-  const [user, setUser] = useState(loadUser);
+  const { user, setUser } = useProvider();
 
   const handleLogin = (u) => {
     const storage = u.remember ? localStorage : sessionStorage;
@@ -40,7 +41,12 @@ export default function App() {
     setUser(null);
   };
 
+  // console.log(user.email);
+
   if (!user) return <Login onSuccess={handleLogin} />;
-  // alert(user.email);
-  return <AppShell user={user} onLogout={handleLogout} />;
+  return (
+    <div className="app-shell">
+      <AppShell user={user} onLogout={handleLogout} />
+    </div>
+  );
 }
