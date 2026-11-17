@@ -23,7 +23,7 @@ import { fetchSeries } from "./api.js";
 import Chart from "./component/Chart.jsx";
 import "./App.css";
 import { columns } from "./Columns.js";
-
+import { useProvider } from "./ContextProvider";
 import { signals } from "./Columns.js";
 
 const RANGES = [
@@ -58,13 +58,14 @@ function transformChartData(apiData) {
 }
 
 export default function AppShell({ user, onLogout }) {
+  // alert(user.email);
   const [selected, setSelected] = useState(DEFAULT_SIGNALS);
-  const [showSignals, setShowSignals] = useState(true);
-  const [range, setRange] = useState("15 Min");
+  const { showSignals } = useProvider();
+  const { range, setRange } = useProvider();
+  const { error, setError } = useProvider();
   const [hours, setHours] = useState(0.25);
   const [search, setSearch] = useState("");
   const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [len, setLength] = useState(0);
   const [compressor, setCompressor] = useState(0);

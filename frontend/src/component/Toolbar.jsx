@@ -14,11 +14,12 @@ import {
 } from "lucide-react";
 import HealthBadge from "./HealthBadge";
 import HealthBadgeDB from "./HealthBadgeDB";
+import { useProvider } from "../ContextProvider";
 
 import "../App.css";
 
 export default function Toolbar() {
-  const [showSignals, setShowSignals] = useState(true);
+  const { setShowSignals } = useProvider();
   const exportCsv = () => {
     const csv = [
       "timestamp," + selected.join(","),
