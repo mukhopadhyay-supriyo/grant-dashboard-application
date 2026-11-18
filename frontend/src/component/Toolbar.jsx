@@ -1,17 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
-import {
-  Activity,
-  CalendarDays,
-  ChevronDown,
-  Download,
-  Filter,
-  Gauge,
-  RefreshCw,
-  Search,
-  SlidersHorizontal,
-  Wifi,
-  LogOut,
-} from "lucide-react";
+import { Activity, TimerReset } from "lucide-react";
 import HealthBadge from "./HealthBadge";
 import HealthBadgeDB from "./HealthBadgeDB";
 import { useProvider } from "../ContextProvider";
@@ -19,7 +6,11 @@ import { useProvider } from "../ContextProvider";
 import "../App.css";
 
 export default function Toolbar() {
-  const { setShowSignals } = useProvider();
+  const { setShowSignals, range, setHours, setRange } = useProvider();
+
+  const navbutton = (id, key) => {
+    <button className=""></button>;
+  };
   const exportCsv = () => {
     const csv = [
       "timestamp," + selected.join(","),
@@ -48,15 +39,47 @@ export default function Toolbar() {
         <div className="toolbar-actions">
           <button
             className="secondary-button"
+            onClick={() => {
+              setHours(0.25);
+              setRange("15 Mins");
+            }}>
+            <TimerReset size={15} /> 15 Mins
+          </button>
+          <button
+            className="secondary-button"
+            onClick={() => {
+              setHours(0.5);
+              setRange("30 Mins");
+            }}>
+            <TimerReset size={15} /> 30 Mins
+          </button>
+          <button
+            className="secondary-button"
+            onClick={() => {
+              setHours(1);
+              setRange("1 Hour");
+            }}>
+            <TimerReset size={15} /> 1 Hour
+          </button>
+          <button
+            className="secondary-button"
+            onClick={() => {
+              setHours(8);
+              setRange("8 Hours");
+            }}>
+            <TimerReset size={15} /> 8 Hours
+          </button>
+          {/* <button
+            className="secondary-button"
             onClick={() => setShowSignals((v) => !v)}>
             <SlidersHorizontal size={15} /> Signals
-          </button>
-          <button className="secondary-button" onClick={exportCsv}>
+          </button> */}
+          {/* <button className="secondary-button" onClick={exportCsv}>
             <Download size={15} /> Export CSV
-          </button>
-          <button className="primary-button">
+          </button> */}
+          {/* <button className="primary-button">
             <CalendarDays size={15} /> Oct 19, 2026 <ChevronDown size={14} />
-          </button>
+          </button> */}
         </div>
       </section>
     </>

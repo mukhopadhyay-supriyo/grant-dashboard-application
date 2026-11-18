@@ -1,9 +1,10 @@
 import { useMemo, useState, useEffect } from "react";
 import { fetchHealthDB } from "../api";
 import { Database, DatabaseZap } from "lucide-react";
+import { useProvider } from "../ContextProvider";
 
 export default function HealthBadgeDB() {
-  const [dbok, setDbok] = useState(null);
+  const { dbok, setDbok } = useProvider();
   //   alert("called");
   useEffect(() => {
     fetchHealthDB()

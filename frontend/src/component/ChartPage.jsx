@@ -1,84 +1,44 @@
-import { useMemo, useState, useEffect } from "react";
-import {
-  Activity,
-  CalendarDays,
-  ChevronDown,
-  Download,
-  Filter,
-  Gauge,
-  RefreshCw,
-  Search,
-  SlidersHorizontal,
-  Wifi,
-  LogOut,
-} from "lucide-react";
+import { useMemo } from "react";
+import { Activity, CalendarDays, Download, Gauge, Search } from "lucide-react";
 
-import Sidebar from "./component/Sidebar";
-import MetricCard from "./component/MetricCard";
-import HealthBadge from "./component/HealthBadge.jsx";
-import HealthBadgeDB from "./component/HealthBadgeDB.jsx";
-import Topbar from "./component/Topbar.jsx";
-import Toolbar from "./component/Toolbar.jsx";
-import { fetchSeries } from "./api.js";
-import Chart from "./component/Chart.jsx";
-import "./App.css";
-import { columns } from "./Columns.js";
-import { useProvider } from "./ContextProvider";
-import { signals } from "./Columns.js";
-
+import Sidebar from "./Sidebar";
+import MetricCard from "./MetricCard";
+import Topbar from "./Topbar.jsx";
+import Toolbar from "./Toolbar.jsx";
+import ToolbarChartArea from "./ToolbarChartArea.jsx";
+import Chart from "./Chart.jsx";
+import "../App.jsx";
+import { useProvider } from "../ContextProvider";
+import { signals } from "../Columns.js";
 const RANGES = [
-  { label: "15 Min", hours: 0.25 },
-  { label: "30 Min", hours: 0.5 },
+  { label: "15 Mins", hours: 0.25 },
+  { label: "30 Mins", hours: 0.5 },
   { label: "1 Hour", hours: 1 },
   { label: "8 hours", hours: 8 },
 ];
 
-const DEFAULT_SIGNALS = [
-  "Suction_temp",
-  "Discharge_temp",
-  "Ambient_temp",
-  "Flow_temp",
-  "Return_temp",
-];
-
-function transformChartData(apiData) {
-  const { timestamps, series } = apiData;
-
-  return timestamps.map((timestamp, index) => {
-    const row = {
-      timestamp: timestamp,
-    };
-
-    series.forEach((sensor) => {
-      row[sensor.name] = sensor.values[index] ?? null;
-    });
-
-    return row;
-  });
-}
-
-export default function AppShell({ user, onLogout }) {
+export default function ChartPage({ user, onLogout }) {
   // alert(user.email);
-  const [selected, setSelected] = useState(DEFAULT_SIGNALS);
-  const { showSignals } = useProvider();
-  const { range, setRange } = useProvider();
-  const { error, setError } = useProvider();
-  const [hours, setHours] = useState(0.25);
-  const [search, setSearch] = useState("");
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [len, setLength] = useState(0);
-  const [compressor, setCompressor] = useState(0);
-  const [ambient, setAmbient] = useState(0);
-  const [fanspeed, setFanspeed] = useState(0);
-  const [pumpspeed, setPumpspeed] = useState(0);
-  const [exp, setExp] = useState(0);
 
-  const { start, end } = useMemo(() => {
-    const end = new Date();
-    const start = new Date(end.getTime() - hours * 3600000);
-    return { start, end };
-  }, [hours]);
+  const {
+    showSignals,
+    range,
+    setRange,
+    error,
+    data,
+    setHours,
+    search,
+    setSearch,
+    loading,
+    compressor,
+    ambient,
+    fanspeed,
+    pumpspeed,
+    exp,
+    selected,
+    setSelected,
+  } = useProvider();
+
   // console.log(start);
   const toggleSignal = (key) =>
     setSelected((old) =>
@@ -91,35 +51,6 @@ export default function AppShell({ user, onLogout }) {
       ),
     [search],
   );
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const result = await fetchSeries(
-          start,
-          end,
-          user.deviceid,
-          signals.map((s) => s.key),
-        );
-        // console.log(result);
-        setData(transformChartData(result));
-        setLength(data.length - 1);
-        setCompressor(data[len].Comp_Speed_Target);
-        setAmbient(data[len].Ambient_temp);
-        setFanspeed(data[len].Fan_Tach);
-        setExp(data[len].Stepper_Position);
-        setPumpspeed(data[len].Pump_Speed_Target);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, [start, end]);
 
   // console.log(data[length].Ambient_temp);
   return (
@@ -127,12 +58,12 @@ export default function AppShell({ user, onLogout }) {
       <Sidebar />
       <main className="main-content">
         <Topbar user={user} onLogout={onLogout} />
-        <Toolbar />
+        <ToolbarChartArea />
         <section className="metrics-grid">
           <MetricCard
             icon={Gauge}
             label="Compressor"
-            value={`${compressor} rpm`}
+            value={`${compressor} Hz`}
             detail="Compressor Frequesncy"
           />
           <MetricCard
@@ -150,7 +81,7 @@ export default function AppShell({ user, onLogout }) {
           <MetricCard
             icon={Gauge}
             label="Expansion Valve"
-            value={`${exp}  rpm`}
+            value={`${exp}  steps`}
             detail="Expansion Valve Stepper Position"
           />
           <MetricCard
