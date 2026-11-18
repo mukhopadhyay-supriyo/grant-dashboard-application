@@ -7,9 +7,9 @@ import ChartPage from "./component/ChartPage.jsx";
 import { useProvider } from "./ContextProvider";
 
 export default function App() {
-  const { user, handleLogout, handleLogin, page } = useProvider();
+  const { user, handleLogout, handleLogin, page, now, setNow } = useProvider();
 
-  console.log(page);
+  // console.log(now);
 
   if (!user) return <Login onSuccess={handleLogin} />;
   if (page === "home") return <Home user={user} onLogout={handleLogout} />;

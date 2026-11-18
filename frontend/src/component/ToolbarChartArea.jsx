@@ -4,6 +4,7 @@ import {
   Download,
   CalendarDays,
   ChevronDown,
+  FileClock,
 } from "lucide-react";
 import HealthBadge from "./HealthBadge";
 import HealthBadgeDB from "./HealthBadgeDB";
@@ -12,8 +13,7 @@ import { useProvider } from "../ContextProvider";
 import "../App.css";
 
 export default function ToolbarChartArea() {
-  const { setShowSignals, range, setHours, setRange, data, selected } =
-    useProvider();
+  const { setShowSignals, data, selected, now } = useProvider();
 
   const exportCsv = () => {
     const csv = [
@@ -28,6 +28,7 @@ export default function ToolbarChartArea() {
     link.click();
     URL.revokeObjectURL(link.href);
   };
+  // console.log(now);
   return (
     <>
       <section className="page-toolbar">
@@ -50,7 +51,9 @@ export default function ToolbarChartArea() {
             <Download size={15} /> Export CSV
           </button>
           <button className="primary-button">
-            <CalendarDays size={15} /> Oct 19, 2026 <ChevronDown size={14} />
+            <FileClock size={15} />
+            <span>{now.toLocaleTimeString("en-IE")}</span>{" "}
+            <ChevronDown size={14} />
           </button>
         </div>
       </section>

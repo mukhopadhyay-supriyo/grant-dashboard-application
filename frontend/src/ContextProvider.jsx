@@ -68,7 +68,14 @@ export function ContextProvider({ children }) {
   const [page, setPage] = useState("home");
   const [selected, setSelected] = useState(DEFAULT_SIGNALS);
   const [dbok, setDbok] = useState(null);
+  const [now, setNow] = useState(new Date());
 
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id); // cleanup on unmount
+  }, []);
+
+  // console.log(now);
   const { start, end } = useMemo(() => {
     const end = new Date();
     const start = new Date(end.getTime() - hours * 3600000);
@@ -87,13 +94,18 @@ export function ContextProvider({ children }) {
           user.deviceid,
           signals.map((s) => s.key),
         );
-        setData(transformChartData(result));
-        setLength(data.length - 1);
-        setCompressor(data[0].Comp_Speed_Target);
-        setAmbient(data[0].Ambient_temp);
-        setFanspeed(data[0].Fan_Speed_Target);
-        setExp(data[0].Stepper_Position);
-        setPumpspeed(data[0].Pump_Speed_Target);
+        const chartdata = transformChartData(result);
+        setData(chartdata);
+
+        if (chartdata.length === 0) return; // nothing in this range
+
+        const first = chartdata[0];
+        setLength(chartdata.length - 1);
+        setCompressor(first.Comp_Speed_Target);
+        setAmbient(first.Ambient_temp);
+        setFanspeed(first.Fan_Speed_Target);
+        setExp(first.Stepper_Position);
+        setPumpspeed(first.Pump_Speed_Target);
       } catch (err) {
         setError(err);
       } finally {
@@ -158,6 +170,8 @@ export function ContextProvider({ children }) {
         setSelected,
         dbok,
         setDbok,
+        now,
+        setNow,
       }}>
       {children}
     </ApplicationContext.Provider>
