@@ -87,14 +87,13 @@ export function ContextProvider({ children }) {
           user.deviceid,
           signals.map((s) => s.key),
         );
-        console.log(result);
         setData(transformChartData(result));
         setLength(data.length - 1);
-        setCompressor(data[len].Comp_Speed_Target);
-        setAmbient(data[len].Ambient_temp);
-        setFanspeed(data[len].Fan_Speed_Target);
-        setExp(data[len].Stepper_Position);
-        setPumpspeed(data[len].Pump_Speed_Target);
+        setCompressor(data[0].Comp_Speed_Target);
+        setAmbient(data[0].Ambient_temp);
+        setFanspeed(data[0].Fan_Speed_Target);
+        setExp(data[0].Stepper_Position);
+        setPumpspeed(data[0].Pump_Speed_Target);
       } catch (err) {
         setError(err);
       } finally {
