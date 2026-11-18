@@ -9,7 +9,7 @@ import { useProvider } from "./ContextProvider";
 export default function App() {
   const { user, handleLogout, handleLogin, page } = useProvider();
 
-  // console.log(page);
+  console.log(page);
 
   if (!user) return <Login onSuccess={handleLogin} />;
   if (page === "home") return <Home user={user} onLogout={handleLogout} />;

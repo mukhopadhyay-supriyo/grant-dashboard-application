@@ -102,7 +102,7 @@ class MysqlSource:
             FROM `heatpump_data`
             WHERE `Device_Id` = %s AND
             `Time_stamp` BETWEEN %s AND %s
-            ORDER BY `Time_stamp` ASC
+            ORDER BY `Time_stamp` DESC
             LIMIT %s
         """
 
