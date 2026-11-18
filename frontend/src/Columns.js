@@ -58,6 +58,10 @@ export const columns = [
   "P_Fan_Auto",
   "pump_mode",
   "pump_rpm_set",
+  "Cond_Temp_Setpoint",
+  "Cond_Temp_Error",
+  "Comp_P_Part",
+  "Comp_I_Part",
   "Time_stamp",
   "SequenceNumber",
 ];
@@ -123,14 +127,14 @@ export const signals = [
     key: "Flow_1",
     label: "Flow 1",
     color: "#d9819f",
-    unit: "m/s",
+    unit: "l/m",
     axis: "left",
   },
   {
     key: "Flow_2",
     label: "Flow 2",
     color: "#5192b8",
-    unit: "m/s",
+    unit: "l/m",
     axis: "left",
   },
   {
@@ -172,21 +176,21 @@ export const signals = [
     key: "Flow_Rate",
     label: "Flow rate",
     color: "#a5d08b",
-    unit: "m/s",
+    unit: "l/m",
     axis: "left",
   },
   {
     key: "Comp_Speed_Target",
     label: "Compressor speed target",
     color: "#d586bb",
-    unit: "rpm",
+    unit: "Hz",
     axis: "left",
   },
   {
     key: "Comp_Speed_Actual",
     label: "Compressor speed actual",
     color: "#81d6d9",
-    unit: "rpm",
+    unit: "Hz",
     axis: "left",
   },
   {
@@ -249,7 +253,7 @@ export const signals = [
     key: "Flow_Rate_L_Per_Min_Times_10",
     label: "Flow rate (L/min × 10)",
     color: "#d9a681",
-    unit: "rpm",
+    unit: "l/m",
     axis: "left",
   },
   {
@@ -424,6 +428,38 @@ export const signals = [
     key: "pump_rpm_set",
     label: "Pump rpm set",
     color: "#8bc8d0",
+    unit: "Hz",
+    axis: "right",
+  },
+
+  {
+    key: "Cond_Temp_Setpoint",
+    label: "Cond Temp Setpointt",
+    color: "#b1d08b",
+    unit: "Hz",
+    axis: "right",
+  },
+
+  {
+    key: "Cond_Temp_Error",
+    label: "Cond Temp Error",
+    color: "#17c15b",
+    unit: "Hz",
+    axis: "right",
+  },
+
+  {
+    key: "Comp_P_Part",
+    label: "Comp P Part",
+    color: "#d08bc0",
+    unit: "Hz",
+    axis: "right",
+  },
+
+  {
+    key: "Comp_I_Part",
+    label: "Comp P Part",
+    color: "#9f11c3",
     unit: "Hz",
     axis: "right",
   },

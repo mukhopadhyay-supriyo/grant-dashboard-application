@@ -1,11 +1,12 @@
 import { RefreshCw, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useProvider } from "../ContextProvider";
 
 import "../App.css";
 
 export default function Topbar({ user, onLogout }) {
-  console.log(user.email);
-  const [error, setError] = useState(null);
+  // console.log(user.email);
+  const { error, setError } = useProvider();
 
   const logout = () => {
     try {

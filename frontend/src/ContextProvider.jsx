@@ -1,10 +1,20 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo, useEffect } from "react";
+import { fetchSeries, fetchHealthDB } from "./api";
+import { signals } from "./Columns.js";
 
 const ApplicationContext = createContext(null);
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 const STORAGE_KEY = "grant-user";
+
+const DEFAULT_SIGNALS = [
+  "Suction_temp",
+  "Discharge_temp",
+  "Ambient_temp",
+  "Flow_temp",
+  "Return_temp",
+];
 // Runs once on start-up: look for a saved login
 function loadUser() {
   try {
@@ -24,11 +34,76 @@ function loadUser() {
   }
 }
 
+function transformChartData(apiData) {
+  const { timestamps, series } = apiData;
+
+  return timestamps.map((timestamp, index) => {
+    const row = {
+      timestamp: timestamp,
+    };
+
+    series.forEach((sensor) => {
+      row[sensor.name] = sensor.values[index] ?? null;
+    });
+
+    return row;
+  });
+}
+
 export function ContextProvider({ children }) {
   const [user, setUser] = useState(loadUser);
   const [showSignals, setShowSignals] = useState(true);
   const [error, setError] = useState(null);
-  const [range, setRange] = useState("15 Min");
+  const [range, setRange] = useState("15 Mins");
+  const [data, setData] = useState(null);
+  const [hours, setHours] = useState(0.25);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [len, setLength] = useState(0);
+  const [compressor, setCompressor] = useState(0);
+  const [ambient, setAmbient] = useState(0);
+  const [fanspeed, setFanspeed] = useState(0);
+  const [pumpspeed, setPumpspeed] = useState(0);
+  const [exp, setExp] = useState(0);
+  const [page, setPage] = useState("home");
+  const [selected, setSelected] = useState(DEFAULT_SIGNALS);
+  const [dbok, setDbok] = useState(null);
+
+  const { start, end } = useMemo(() => {
+    const end = new Date();
+    const start = new Date(end.getTime() - hours * 3600000);
+    return { start, end };
+  }, [hours]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const result = await fetchSeries(
+          start,
+          end,
+          user.deviceid,
+          signals.map((s) => s.key),
+        );
+        console.log(result);
+        setData(transformChartData(result));
+        setLength(data.length - 1);
+        setCompressor(data[len].Comp_Speed_Target);
+        setAmbient(data[len].Ambient_temp);
+        setFanspeed(data[len].Fan_Speed_Target);
+        setExp(data[len].Stepper_Position);
+        setPumpspeed(data[len].Pump_Speed_Target);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [start, end]);
 
   const handleLogin = (u) => {
     const storage = u.remember ? localStorage : sessionStorage;
@@ -37,6 +112,7 @@ export function ContextProvider({ children }) {
       : u;
     storage.setItem(STORAGE_KEY, JSON.stringify(toSave));
     setUser(toSave);
+    // setRange("30 Mins");
   };
 
   const handleLogout = () => {
@@ -57,6 +133,32 @@ export function ContextProvider({ children }) {
         setRange,
         handleLogin,
         handleLogout,
+        data,
+        setData,
+        hours,
+        setHours,
+        search,
+        setSearch,
+        loading,
+        setLoading,
+        len,
+        setLength,
+        compressor,
+        setCompressor,
+        ambient,
+        setAmbient,
+        fanspeed,
+        setFanspeed,
+        pumpspeed,
+        setPumpspeed,
+        exp,
+        setExp,
+        page,
+        setPage,
+        selected,
+        setSelected,
+        dbok,
+        setDbok,
       }}>
       {children}
     </ApplicationContext.Provider>
