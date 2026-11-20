@@ -1,8 +1,20 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file:
+      - .env            # copy .env.example to .env and fill in the MySQL values first
+    expose:
+      - "8000"          # only reachable from the dashboard container, not from your PC
+    restart: unless-stopped
+
   dashboard:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      - api
     restart: unless-stopped

@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.venv
+venv
+__pycache__
+*.pyc
+frontend/node_modules
+frontend/dist
+data
+models
+notebooks
+reports
+references
+script
+*.md

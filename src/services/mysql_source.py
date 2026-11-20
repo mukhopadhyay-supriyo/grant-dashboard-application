@@ -152,10 +152,14 @@ class MysqlSource:
 
         timestamps = datetime.now()
         user = []
-
-        user = LoginRequest(
-            name=rows[0][1], email=rows[0][2], password=rows[0][3], id=rows[0][0]
-        )
+        if len(rows) > 0:
+            user = LoginRequest(
+                name=rows[0][1], email=rows[0][2], password=rows[0][3], id=rows[0][0]
+            )
+        else:
+            raise Exception(
+                "user details not found, check DB connection or the username password"
+            )
 
         return user
 

@@ -6,6 +6,7 @@ import {
   House,
   Settings,
   SlidersHorizontal,
+  ListCheck,
 } from "lucide-react";
 import logo from "../static/logo.jpg";
 
@@ -38,6 +39,10 @@ function Sidebar() {
       <div className="brand-word">
         Grant<span>cloud</span>
       </div>
+      <div className="side-rule" />
+      <NavButton id="installation" title="Installation">
+        <ListCheck size={20} />
+      </NavButton>
       <div className="side-rule" />
       <NavButton id="home" title="Home">
         <House size={20} />

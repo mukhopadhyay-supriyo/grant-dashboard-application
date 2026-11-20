@@ -65,13 +65,13 @@ export function ContextProvider({ children }) {
   const [fanspeed, setFanspeed] = useState(0);
   const [pumpspeed, setPumpspeed] = useState(0);
   const [exp, setExp] = useState(0);
-  const [page, setPage] = useState("home");
+  const [page, setPage] = useState("charts");
   const [selected, setSelected] = useState(DEFAULT_SIGNALS);
   const [dbok, setDbok] = useState(null);
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
+    const id = setInterval(() => setNow(new Date()), 5000);
     return () => clearInterval(id); // cleanup on unmount
   }, []);
 
