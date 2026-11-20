@@ -4,7 +4,6 @@ import Toolbar from "./Toolbar";
 import MetricCard from "./MetricCard";
 import { Activity, CalendarDays, Gauge } from "lucide-react";
 import { useProvider } from "../ContextProvider";
-import Clock from "./Clock";
 
 export default function Home({ user, onLogout }) {
   const { compressor, ambient, fanspeed, exp, pumpspeed, range, dbok } =
@@ -53,7 +52,6 @@ export default function Home({ user, onLogout }) {
             detail="Window scale"
           />
         </section>
-        <Clock />
       </main>
     </>
   );
