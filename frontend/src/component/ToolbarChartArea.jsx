@@ -2,9 +2,7 @@ import {
   Activity,
   SlidersHorizontal,
   Download,
-  CalendarDays,
-  ChevronDown,
-  FileClock,
+  CalendarClock,
 } from "lucide-react";
 import HealthBadge from "./HealthBadge";
 import HealthBadgeDB from "./HealthBadgeDB";
@@ -51,9 +49,9 @@ export default function ToolbarChartArea() {
             <Download size={15} /> Export CSV
           </button>
           <button className="primary-button">
-            <FileClock size={15} />
-            <span>{now.toLocaleTimeString("en-IE")}</span>{" "}
-            <ChevronDown size={14} />
+            <CalendarClock size={15} /> Time:
+            <span>{now.toLocaleString("en-IE")}</span>{" "}
+            {/* <ChevronDown size={14} /> */}
           </button>
         </div>
       </section>
