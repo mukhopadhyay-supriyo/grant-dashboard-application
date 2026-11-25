@@ -14,6 +14,13 @@ const DEFAULT_SIGNALS = [
   "Ambient_temp",
   "Flow_temp",
   "Return_temp",
+  "System_Flow_Temperature",
+  "System_Return_Temperature",
+  "Flow_Rate",
+  "System_Flow_Rate",
+
+  "Fan_Tach",
+  "Fan_Speed_Target",
 ];
 // Runs once on start-up: look for a saved login
 function loadUser() {
@@ -71,7 +78,7 @@ export function ContextProvider({ children }) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 5000);
+    const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id); // cleanup on unmount
   }, []);
 
